@@ -1,0 +1,2 @@
+DELETE FROM roles
+WHERE id = 9;

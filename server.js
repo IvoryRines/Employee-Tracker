@@ -17,16 +17,10 @@ inquirer.prompt([
         type: 'list',
         message: 'What would you like to do?',
         name:'action',
-        choices: [],
-    },
-
-    {
-        type: '',
-        message: '',
-        name: '',
-        choices: [],
+        choices: ['View All Employees', 'Add Employee', 'Update Employee Role', 'View All Roles', 'Add Role', 'View All Departments', 'Add Department', 'Quit'],
     },
 ]);
+
 
 pool.connect();
 
