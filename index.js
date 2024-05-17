@@ -2,7 +2,7 @@ const inquirer = require("inquirer");
 const { db } = require('./utils/db');
 const { addDepartment, addRole, addEmployee, updateEmployeeRole } = require('./utils/modifyFunctions');
 
-// Main menu function to display choices to the user
+
 function mainMenu() {
   inquirer
     .prompt([
@@ -23,7 +23,6 @@ function mainMenu() {
       },
     ])
     .then((response) => {
-      // Handle the user's selection
       if (response.action === "View All Departments") {
         viewDepartments();
       } else if (response.action === "View All Roles") {
@@ -39,57 +38,31 @@ function mainMenu() {
       } else if (response.action === "Update Employee Role") {
         updateEmployeeRole(mainMenu);
       } else {
-        process.exit();  // Exit the application
+        process.exit();
       }
     });
 }
 
-// Function to view all departments
 function viewDepartments() {
   db.query("SELECT * FROM department", function (err, { rows }) {
-    if (err) {
-      console.error('Error fetching departments:', err);
-    } else {
-      console.table(rows);  // Display departments in a table format
-    }
-    mainMenu();  // Return to the main menu
+    console.table(rows);
+    mainMenu();
   });
 };
 
-// Function to view all roles
 function viewRoles() {
-  db.query(
-    "SELECT role.id, role.title, department.dept_name, role.salary FROM role JOIN department ON role.department = department.id",
-    function (err, { rows }) {
-      if (err) {
-        console.error('Error fetching roles:', err);
-      } else {
-        console.table(rows);  // Display roles in a table format
-      }
-      mainMenu();  // Return to the main menu
-    }
-  );
+    db.query("SELECT role.id, role.title, department.dept_name, role.salary FROM role JOIN department ON role.department = department.id", function (err, { rows }) {
+      console.table(rows);
+      mainMenu();
+    });
 };
 
-// Function to view all employees
 function viewEmployees() {
-  db.query(
-    `SELECT employee.id, employee.first_name, employee.last_name, role.title, department.dept_name, role.salary, 
-    CONCAT(manager.first_name, ' ', manager.last_name) AS manager 
-    FROM employee 
-    LEFT JOIN role ON employee.role_id = role.id 
-    LEFT JOIN department ON role.department = department.id 
-    LEFT JOIN employee manager ON manager.id = employee.manager_id`,
-    function (err, { rows }) {
-      if (err) {
-        console.error('Error fetching employees:', err);
-      } else {
-        console.table(rows);  // Display employees in a table format
-      }
-      mainMenu();  // Return to the main menu
-    }
-  );
+    db.query("SELECT employee.id, employee.first_name, employee.last_name, role.title, department.dept_name, role.salary, CONCAT(manager.first_name, ' ', manager.last_name) AS manager FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department = department.id LEFT JOIN employee manager ON manager.id = employee.manager_id", function (err, { rows }) {
+      console.table(rows);
+      mainMenu();
+    });
 };
 
-// Start the application by displaying the main menu
+
 mainMenu();
