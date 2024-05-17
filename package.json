@@ -2,16 +2,14 @@
   "name": "employee-tracker",
   "version": "1.0.0",
   "description": "Challenge 12: SQL",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.19.2",
     "inquirer": "^8.2.4",
     "pg": "^8.11.5"
   }
