@@ -3,31 +3,34 @@ const { db } = require('./db');
 
 
 
-// function to add a new department
+// Function to add a new department
 async function addDepartment(mainMenu) {
-    inquirer.prompt( [
-        {
-            type: 'input',
-            name:'departmentName',
-            message: 'What is the name of the department?',
-        },
+  // Prompt the user for the department name
+  inquirer.prompt([
+      {
+          type: 'input',
+          name:'departmentName',
+          message: 'What is the name of the department?',
+      },
   ]).then((answers) => {
       const departmentName = answers.departmentName;
-  
+      // Insert the new department into the database
       db.query("INSERT INTO department (dept_name) VALUES ($1)", [departmentName], function (err, result) {
         if (err) {
           console.error('Error adding department:', err);
         } else {
           console.log('Department added successfully!');
         }
+        // Return to the main menu
         mainMenu();
       });
   })
 };
   
 
-// function to add a new role
+// Function to add a new role
 async function addRole(mainMenu) {
+  // Fetch all departments to provide as choices
     const dept = await db.query("SELECT * FROM department");
     const deptChoices = dept.rows.map(({id,dept_name}) => 
         ({
@@ -35,6 +38,7 @@ async function addRole(mainMenu) {
             value: id,
         })
     );
+    // Prompt the user for the role details
     inquirer.prompt( [
       {
           type: 'input',
@@ -56,21 +60,24 @@ async function addRole(mainMenu) {
       },
   ]).then((answers) => {
       const { roleTitle, roleSalary, roleDepartment } = answers;
-  
+      
+      // Insert the new role into the database
       db.query("INSERT INTO role (title, salary, department) VALUES ($1, $2, $3)", [roleTitle, roleSalary, roleDepartment], function (err, result) {
         if (err) {
           console.error('Error adding role:', err);
         } else {
           console.log('Role added successfully!');
         }
+        // Return to the main menu
         mainMenu();
       });
   })
 };
   
 
-// function to add a new employee
+// Function to add a new employee
 async function addEmployee(mainMenu) {
+    // Fetch all roles to provide as choices
     const roles = await db.query("SELECT * FROM role");
     const roleChoices = roles.rows.map(({id,title}) => 
         ({
@@ -78,7 +85,7 @@ async function addEmployee(mainMenu) {
             value: id,
         })
     );
-
+    // Fetch all employees to provide as manager choices
     const managers = await db.query("SELECT * FROM employee");
     const managerChoices = managers.rows.map(({id, first_name, last_name}) =>
         ({
@@ -86,12 +93,12 @@ async function addEmployee(mainMenu) {
           value: id,
         })
     );
-
+    // Add an option for no manager
     managerChoices.unshift({
       name: `None`,
       value: null,
     });
-  
+    // Prompt the user for the employee details
     inquirer.prompt( [
       {
         type: 'input',
@@ -115,32 +122,34 @@ async function addEmployee(mainMenu) {
         message: 'Who is the employee\'s manager?',
         choices: managerChoices
       },
-  
+
   ]).then((answers) => {
       const { firstName, lastName, employeeRole, employeeManager } = answers;
-  
+      // Insert the new employee into the database
       db.query("INSERT INTO employee (first_name, last_name,  role_id, manager_id) VALUES ($1, $2, $3, $4)", [firstName, lastName, employeeRole, employeeManager], function (err, result) {
         if (err) {
           console.error('Error adding employee:', err);
         } else {
           console.log('Employee added successfully!');
         }
+        // Return to the main menu
         mainMenu();
       });
   })
 };
   
 
-// function to update an employee role
+// Function to update an employee's role
 async function updateEmployeeRole(mainMenu) {
-  const employees = await db.query("SELECT * FROM employee");
+    // Fetch all employees to provide as choices
+    const employees = await db.query("SELECT * FROM employee");
     const employeeChoices = employees.rows.map(({id, first_name, last_name}) =>
         ({
           name: `${first_name} ${last_name}`,
           value: id,
         })
     );
-  
+    // Fetch all roles to provide as choices
     const roles = await db.query("SELECT * FROM role");
     const roleChoices = roles.rows.map(({id, title}) => 
         ({
@@ -148,7 +157,7 @@ async function updateEmployeeRole(mainMenu) {
           value: id,
         })
     );
-  
+    // Fetch all employees again to provide as manager choices
     const managers = await db.query("SELECT * FROM employee");
     const managerChoices = managers.rows.map(({id, first_name, last_name}) =>
         ({
@@ -156,12 +165,12 @@ async function updateEmployeeRole(mainMenu) {
           value: id,
         })
     );
-  
+    // Add an option for no manager
     managerChoices.unshift({
       name: `None`,
       value: null,
     });
-  
+    // Prompt the user for the employee and new role details
     inquirer.prompt( [
       {
         type: 'list',
@@ -181,10 +190,10 @@ async function updateEmployeeRole(mainMenu) {
         message: 'Who is the employee\'s new manager?',
         choices: managerChoices
       },
-  
+
   ]).then((answers) => {
       const { employeeToUpdate, newRole, employeeManager } = answers;
-  
+      // Update the employee's role and manager in the database
       db.query("UPDATE employee SET role_id = $1, manager_id = $2 WHERE id = $3",
       [newRole, employeeManager, employeeToUpdate], function (err, result) {
         if (err) {
@@ -192,12 +201,14 @@ async function updateEmployeeRole(mainMenu) {
         } else {
           console.log('Employee role updated successfully!');
         }
+        // Return to the main menu
         mainMenu();
       });
   })
 };
 
 
+// Export the functions
 module.exports = {
     addDepartment,
     addRole,
