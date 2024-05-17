@@ -1,10 +1,10 @@
 const inquirer = require("inquirer");
 const { db } = require('./db');
-// const { mainMenu } = require('../index');
 
+
+
+// function to add a new department
 async function addDepartment(mainMenu) {
-
-    const dept = await db.query("SELECT * FROM department");
     inquirer.prompt( [
         {
             type: 'input',
@@ -22,11 +22,12 @@ async function addDepartment(mainMenu) {
         }
         mainMenu();
       });
-    })
-  };
+  })
+};
   
+
+// function to add a new role
 async function addRole(mainMenu) {
-  
     const dept = await db.query("SELECT * FROM department");
     const deptChoices = dept.rows.map(({id,dept_name}) => 
         ({
@@ -41,14 +42,12 @@ async function addRole(mainMenu) {
           message: 'What is the name of the role?',
           
       },
-  
       {
           type: 'number',
           name:'roleSalary',
           message: 'What is the salary of the role?',
           
       },
-  
       {
           type: 'list',
           name: 'roleDepartment',
@@ -66,12 +65,12 @@ async function addRole(mainMenu) {
         }
         mainMenu();
       });
-    })
-  };
+  })
+};
   
-  
+
+// function to add a new employee
 async function addEmployee(mainMenu) {
-  
     const roles = await db.query("SELECT * FROM role");
     const roleChoices = roles.rows.map(({id,title}) => 
         ({
@@ -79,7 +78,7 @@ async function addEmployee(mainMenu) {
             value: id,
         })
     );
-  
+
     const managers = await db.query("SELECT * FROM employee");
     const managerChoices = managers.rows.map(({id, first_name, last_name}) =>
         ({
@@ -87,7 +86,7 @@ async function addEmployee(mainMenu) {
           value: id,
         })
     );
-  
+
     managerChoices.unshift({
       name: `None`,
       value: null,
@@ -98,29 +97,24 @@ async function addEmployee(mainMenu) {
         type: 'input',
         name:'firstName',
         message: 'What is the employee\'s first name?',
-        
-    },
-  
-    {
+      },
+      {
         type: 'input',
         name:'lastName',
         message: 'What is the employee\'s last name?',
-        
-    },
-  
-    {
+      },
+      {
         type: 'list',
         name: 'employeeRole',
         message: 'What is the employee\'s role?',
         choices: roleChoices
-    },
-  
-    {
+      },
+      {
         type: 'list',
         name: 'employeeManager',
         message: 'Who is the employee\'s manager?',
         choices: managerChoices
-    },
+      },
   
   ]).then((answers) => {
       const { firstName, lastName, employeeRole, employeeManager } = answers;
@@ -133,13 +127,13 @@ async function addEmployee(mainMenu) {
         }
         mainMenu();
       });
-    })
-  };
+  })
+};
   
-  
+
+// function to update an employee role
 async function updateEmployeeRole(mainMenu) {
-  
-    const employees = await db.query("SELECT * FROM employee");
+  const employees = await db.query("SELECT * FROM employee");
     const employeeChoices = employees.rows.map(({id, first_name, last_name}) =>
         ({
           name: `${first_name} ${last_name}`,
@@ -150,8 +144,8 @@ async function updateEmployeeRole(mainMenu) {
     const roles = await db.query("SELECT * FROM role");
     const roleChoices = roles.rows.map(({id, title}) => 
         ({
-            name: title,
-            value: id,
+          name: title,
+          value: id,
         })
     );
   
@@ -174,21 +168,19 @@ async function updateEmployeeRole(mainMenu) {
         name: 'employeeToUpdate',
         message: 'Which employee\'s role would you like to update?',
         choices: employeeChoices
-    },
-  
-    {
+      },
+      {
         type: 'list',
         name: 'newRole',
         message: 'What is the employee\'s new role?',
         choices: roleChoices
-    },
-  
-    {
-      type: 'list',
-      name: 'employeeManager',
-      message: 'Who is the employee\'s new manager?',
-      choices: managerChoices
-    },
+      },
+      {
+        type: 'list',
+        name: 'employeeManager',
+        message: 'Who is the employee\'s new manager?',
+        choices: managerChoices
+      },
   
   ]).then((answers) => {
       const { employeeToUpdate, newRole, employeeManager } = answers;
@@ -202,8 +194,8 @@ async function updateEmployeeRole(mainMenu) {
         }
         mainMenu();
       });
-    })
-  };
+  })
+};
 
 
 module.exports = {
