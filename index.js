@@ -2,6 +2,7 @@ const inquirer = require("inquirer");
 const { db } = require('./utils/db');
 const { addDepartment, addRole, addEmployee, updateEmployeeRole } = require('./utils/modifyFunctions');
 
+
 // Main menu function to display choices to the user
 function mainMenu() {
   inquirer
@@ -41,8 +42,9 @@ function mainMenu() {
       } else {
         process.exit();  // Exit the application
       }
-    });
-}
+  });
+};
+
 
 // Function to view all departments
 function viewDepartments() {
@@ -55,6 +57,7 @@ function viewDepartments() {
     mainMenu();  // Return to the main menu
   });
 };
+
 
 // Function to view all roles
 function viewRoles() {
@@ -70,6 +73,7 @@ function viewRoles() {
     }
   );
 };
+
 
 // Function to view all employees
 function viewEmployees() {
@@ -90,6 +94,7 @@ function viewEmployees() {
     }
   );
 };
+
 
 // Start the application by displaying the main menu
 mainMenu();
